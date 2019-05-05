@@ -9,21 +9,40 @@
 
 class App {
   constructor() {
-    const menuElement = document.querySelector('#menu');
-    this.menu = new MenuScreen(menuElement);
-
-    const mainElement = document.querySelector('#main');
-    this.flashcards = new FlashcardScreen(mainElement);
+    //bind function
+    this.contentClicked=this.contentClicked.bind(this);
+    this.showResults=this.showResults.bind(this);
+    this.showMenu=this.showMenu.bind(this);
+    this.continue=this.continue.bind(this);
+    this.restart=this.restart.bind(this);
 
     const resultElement = document.querySelector('#results');
-    this.results = new ResultsScreen(resultElement);
+    this.results = new ResultsScreen(resultElement,this.showMenu,this.continue,this.restart);
 
-    // Uncomment this pair of lines to see the "flashcard" screen:
-    // this.menu.hide();
-    // this.flashcards.show();
+    const menuElement = document.querySelector('#menu');
+    this.menu = new MenuScreen(menuElement,this.contentClicked);
 
-    // Uncomment this pair of lines to see the "results" screen:
-    // this.menu.hide();
-    // this.results.show();
+    const mainElement = document.querySelector('#main');
+    this.flashcards = new FlashcardScreen(mainElement,this.showResults);
+  }
+  contentClicked(words){ //show menu
+    this.menu.hide();
+    this.flashcards.show(words);
+  }
+  showResults(){ //show results
+    this.flashcards.hide();
+    this.results.show(this.flashcards.correct,this.flashcards.wrong);
+  }
+  showMenu(){
+    this.results.hide();
+    this.menu.show();
+  }
+  continue(){ //click the continue button
+    this.results.hide();
+    this.flashcards.show();
+  }
+  restart(){ //click the start over? button
+    this.results.hide();
+    this.flashcards.show(null,true);
   }
 }
